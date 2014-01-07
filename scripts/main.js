@@ -1,46 +1,29 @@
 ﻿var App = {
     Models: {},
     Collections: {},
-    Contacts: null
+    Views: {},
+    Routers: {},
+    Contacts: null,
+    Directory: null,
+    Browser: null
 };
 
 $(function () { //Run this code when the DOM is ready
-
-    window.tom = new App.Models.Contact({
-        firstName: 'Thomas',
-        lastName: 'Hunter',
-        phoneNumber: '987654321',
-        email: 'me@thomashunter.name'
-    });
-
+        
     App.Contacts = new App.Collections.Contact();
-
-    App.Contacts.add(window.tom);
-
-    App.Contacts.add({
-        firstName: 'Rupert',
-        lastName: 'Styx',
-        phoneNumber: '123456789',
-        email: 'rupertstyx@example.net'
+        
+    App.Directory = new App.Views.Directory({
+        el: $("#display")
     });
 
-    App.Contacts.add({});
+    App.Directory.render();
 
-    var contactListing = '';
-
-    App.Contacts.each(function (contact) {
-        contactListing += "<div>" +
-            contact.get('firstName') + " " +
-            contact.get('lastName') + " ";
-
-        if (contact.isValid()) {
-            contactListing += "(valid)";
-        } else {
-            contactListing += "(invalid)";
-        }
-
-        contactListing += "</div>";
+    App.Contacts.on("add remove", function () {
+        App.Directory.render();
     });
 
-    $("#display").html(contactListing);
+    App.Browser = new App.Routers.Contact;
+    Backbone.history.start();
+
+    App.Contacts.fetch();
 });
